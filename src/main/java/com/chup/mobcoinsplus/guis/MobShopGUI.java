@@ -27,7 +27,7 @@ public class MobShopGUI {
         String currencySymbol = Config.getCurrencySymbol();
 
         Inventory gui = Bukkit.createInventory(null, 54, name);
-        ArrayList<ItemStack> allItems = Main.allItems;
+        ArrayList<ItemStack> allItems = new ArrayList<>(Main.allItems);
 
         ItemStack left;
         ItemMeta leftMeta;

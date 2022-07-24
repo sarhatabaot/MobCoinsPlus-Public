@@ -3,7 +3,7 @@ package com.chup.mobcoinsplus.extras;
 import java.util.*;
 
 public class CoinsTop {
-    public static HashMap<UUID, Integer> sortByValue(HashMap<UUID, Integer> hm)
+    public static HashMap<UUID, Integer> sortByValue(Map<UUID, Integer> hm)
     {
         List<Map.Entry<UUID, Integer> > list =
                 new LinkedList<Map.Entry<UUID, Integer> >(hm.entrySet());

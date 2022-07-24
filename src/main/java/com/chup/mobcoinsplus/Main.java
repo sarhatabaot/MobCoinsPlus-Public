@@ -16,13 +16,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class Main extends JavaPlugin {
 
-    public static HashMap<UUID, Integer> points = new HashMap<UUID, Integer>();
-    public static ArrayList<ItemStack> allItems;
-    public static HashMap<ItemStack, Integer> cost;
+    public static Map<UUID, Integer> points = new HashMap<>();
+    public static List<ItemStack> allItems;
+    public static Map<ItemStack, Integer> cost;
     public ConfigManager configManager;
 
     @Override
@@ -112,6 +114,6 @@ public class Main extends JavaPlugin {
     }
 
     public FileConfiguration getMessages() {
-        return this.configManager.get("messages.yml");
+        return ConfigManager.get("messages.yml");
     }
 }
