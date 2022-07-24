@@ -310,11 +310,11 @@ public class MobCoinsExecutor implements CommandExecutor {
                                 int cost = Integer.parseInt(args[1]);
                                 ItemStack item = Extras.duplicateItem(player);
 
-                                Boolean exists = false;
+                                boolean exists = false;
                                 for (ItemStack items : Main.cost.keySet()) {
                                     ItemStack copy = new ItemStack(items);
                                     ItemMeta copyMeta = copy.getItemMeta();
-                                    List<String> newLore = new ArrayList<String>();
+                                    List<String> newLore = new ArrayList<>();
                                     for (int i = 0; i < copyMeta.getLore().size() - 2; i++) {
                                         newLore.add(copyMeta.getLore().get(i));
                                     }
