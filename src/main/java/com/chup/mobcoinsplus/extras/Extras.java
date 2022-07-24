@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Iterator;
 import java.util.UUID;
 
 public class Extras {
@@ -18,7 +17,7 @@ public class Extras {
     public static void giveCoins(Player player, int amount) {
         if (!Main.points.containsKey(player.getUniqueId())) {
 
-            Main.points.put(player.getUniqueId(), 0 + amount);
+            Main.points.put(player.getUniqueId(), amount);
 
         } else {
 
@@ -34,7 +33,7 @@ public class Extras {
 
         if (!Main.points.containsKey(player.getUniqueId())) {
 
-            Main.points.put(player.getUniqueId(), 0 - amount);
+            Main.points.put(player.getUniqueId(), -amount);
 
         } else {
 
@@ -65,7 +64,6 @@ public class Extras {
             ItemMeta duplicateItemMeta = duplicateItem.getItemMeta();
             duplicateItem.setItemMeta(duplicateItemMeta);
             return duplicateItem;
-
         }
         return null;
     }
