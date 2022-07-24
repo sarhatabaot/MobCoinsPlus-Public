@@ -26,14 +26,14 @@ public class ClickListener implements Listener {
         this.plugin = plugin;
     }
 
-    String GUIname = Config.getMobShopGUIName();
+    String guiName = Config.getMobShopGUIName();
 
     @EventHandler
     public void onClick(InventoryClickEvent e) {
 
         Player player = (Player) e.getWhoClicked();
         ItemStack item = e.getCurrentItem();
-        if (item == null || !e.getView().getTitle().contains(GUIname)) {
+        if (item == null || !e.getView().getTitle().contains(guiName)) {
             return;
         }
 
@@ -48,51 +48,57 @@ public class ClickListener implements Listener {
                 }
             }
         }
+
         if (!item.getType().equals(XMaterial.AIR.parseMaterial()) && e.getRawSlot() > 9 && e.getRawSlot() < 44
                 && e.getRawSlot() != 18 && e.getRawSlot() != 27 && e.getRawSlot() != 36 && e.getRawSlot() != 17
                 && e.getRawSlot() != 26 && e.getRawSlot() != 35) {
             if (meta.hasLore()) {
-                if (Main.points.containsKey(player.getUniqueId())) {
-                    if (Main.cost.containsKey(item)) {
-                        if (Main.points.get(player.getUniqueId()) >= Main.cost.get(item)) {
-                            ItemStack copy = new ItemStack(item);
-                            ItemMeta copyMeta = copy.getItemMeta();
-                            List<String> newLore = new ArrayList<String>();
-                            for (int i = 0; i < copyMeta.getLore().size() - 2; i++) {
-                                newLore.add(copyMeta.getLore().get(i));
-                            }
-                            int price = Main.cost.get(item);
-                            int balance = Main.points.get(player.getUniqueId());
-                            copyMeta.setLore(newLore);
-                            copy.setItemMeta(copyMeta);
-                            if (player.getInventory().firstEmpty() == -1) {
-                                String message = plugin.getMessages().getString("inventory-full");
-                                player.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
-                                player.playSound(player.getLocation(), XSound.ENTITY_VILLAGER_NO.parseSound(), 1.0F, 1.0F);
-                            } else {
-                                Main.points.put(player.getUniqueId(), balance - price);
-                                player.getInventory().setItem(player.getInventory().firstEmpty(), copy);
-                                player.closeInventory();
-                                String message = plugin.getMessages().getString("item-purchased");
-                                player.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
-                                player.playSound(player.getLocation(), XSound.ENTITY_PLAYER_LEVELUP.parseSound(), 1.0F, 1.0F);
-                            }
-                        } else {
-                            String message = plugin.getMessages().getString("insufficient-coins");
-                            player.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
-                            player.playSound(player.getLocation(), XSound.ENTITY_VILLAGER_NO.parseSound(), 1.0F, 1.0F);
-                        }
-                    } else {
-                        String message = plugin.getMessages().getString("item-unknown");
-                        player.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
-                        player.playSound(player.getLocation(), XSound.ENTITY_VILLAGER_NO.parseSound(), 1.0F, 1.0F);
-                        player.closeInventory();
-                    }
-                } else {
+                if (!Main.points.containsKey(player.getUniqueId())) {
                     String message = plugin.getMessages().getString("insufficient-coins");
                     player.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
                     player.playSound(player.getLocation(), XSound.ENTITY_VILLAGER_NO.parseSound(), 1.0F, 1.0F);
+                    return;
                 }
+
+                if (!Main.cost.containsKey(item)) {
+                    String message = plugin.getMessages().getString("item-unknown");
+                    player.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
+                    player.playSound(player.getLocation(), XSound.ENTITY_VILLAGER_NO.parseSound(), 1.0F, 1.0F);
+                    player.closeInventory();
+                    return;
+                }
+                if (Main.points.get(player.getUniqueId()) < Main.cost.get(item)) {
+                    String message = plugin.getMessages().getString("insufficient-coins");
+                    player.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
+                    player.playSound(player.getLocation(), XSound.ENTITY_VILLAGER_NO.parseSound(), 1.0F, 1.0F);
+                    return;
+                }
+
+                ItemStack copy = new ItemStack(item);
+                ItemMeta copyMeta = copy.getItemMeta();
+                List<String> newLore = new ArrayList<>();
+                for (int i = 0; i < copyMeta.getLore().size() - 2; i++) {
+                    newLore.add(copyMeta.getLore().get(i));
+                }
+                int price = Main.cost.get(item);
+                int balance = Main.points.get(player.getUniqueId());
+                copyMeta.setLore(newLore);
+                copy.setItemMeta(copyMeta);
+                if (player.getInventory().firstEmpty() == -1) {
+                    String message = plugin.getMessages().getString("inventory-full");
+                    player.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
+                    player.playSound(player.getLocation(), XSound.ENTITY_VILLAGER_NO.parseSound(), 1.0F, 1.0F);
+                    return;
+                }
+
+                Main.points.put(player.getUniqueId(), balance - price);
+                player.getInventory().setItem(player.getInventory().firstEmpty(), copy);
+                player.closeInventory();
+                String message = plugin.getMessages().getString("item-purchased");
+                player.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
+                player.playSound(player.getLocation(), XSound.ENTITY_PLAYER_LEVELUP.parseSound(), 1.0F, 1.0F);
+
+
             }
         }
 
