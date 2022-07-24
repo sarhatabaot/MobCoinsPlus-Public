@@ -1,5 +1,9 @@
 package com.chup.mobcoinsplus;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
+import com.chup.mobcoinsplus.extras.ChatUtil;
 import com.chup.mobcoinsplus.extras.CoinsTop;
 import com.chup.mobcoinsplus.extras.Extras;
 import com.cryptomorin.xseries.XMaterial;
@@ -17,10 +21,12 @@ import org.jetbrains.annotations.NotNull;
 import java.text.DecimalFormat;
 import java.util.*;
 
-public class MobCoinsExecutor implements CommandExecutor {
+@CommandAlias("mobcoins|mc")
+@Description("MobCoins commands.")
+public class MobCoinsExecutor extends BaseCommand implements CommandExecutor {
     private Player player;
 
-    String prefix = ChatColor.translateAlternateColorCodes('&', Config.getPluginPrefix());
+    String prefix = ChatUtil.color(Config.getPluginPrefix());
 
     private final Main plugin;
 

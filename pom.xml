@@ -25,6 +25,7 @@
         <bstats.version>3.0.0</bstats.version>
         <xseries.version>9.0.0</xseries.version>
         <nbtapi.version>2.10.0</nbtapi.version>
+        <acf.version>0.5.1-SNAPSHOT</acf.version>
     </properties>
 
     <build>
@@ -104,6 +105,10 @@
             <url>https://repo.codemc.org/repository/maven-public/</url>
             <layout>default</layout>
         </repository>
+        <repository>
+            <id>aikar</id>
+            <url>https://repo.aikar.co/content/groups/aikar/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -141,6 +146,12 @@
             <groupId>de.tr7zw</groupId>
             <artifactId>item-nbt-api</artifactId>
             <version>${nbtapi.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>co.aikar</groupId>
+            <artifactId>acf-paper</artifactId>
+            <version>${acf.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
