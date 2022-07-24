@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 public class Main extends JavaPlugin {
@@ -26,9 +27,11 @@ public class Main extends JavaPlugin {
     public static Map<ItemStack, Integer> cost;
     public ConfigManager configManager;
 
+    private Random random;
+
     @Override
     public void onEnable() {
-
+        this.random = new Random();
         allItems = new ArrayList<>();
         cost = new HashMap<>();
 
@@ -87,7 +90,7 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
+        this.random = null;
         try {
             SLAPI.save(points, "./plugins/MobCoinsPlus/data/coins.bin");
         } catch (Exception e) {
@@ -115,4 +118,9 @@ public class Main extends JavaPlugin {
     public FileConfiguration getMessages() {
         return ConfigManager.get("messages.yml");
     }
+
+    public Random getRandom() {
+        return random;
+    }
+
 }
