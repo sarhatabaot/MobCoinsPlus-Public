@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 public class ConfigManager {
-    private static final Map<String, FileConfiguration> configs = new HashMap();
+    private static final Map<String, FileConfiguration> configs = new HashMap<>();
     private final Main plugin;
 
     public ConfigManager(Main plugin) {
@@ -28,7 +28,7 @@ public class ConfigManager {
             try {
                 this.plugin.saveResource(fileName, false);
             } catch (Exception var4) {
-                Bukkit.getLogger().log(Level.SEVERE, "Error creating file" + fileName, var4);
+                this.plugin.getLogger().log(Level.SEVERE, "Error creating file" + fileName, var4);
             }
         }
 
@@ -39,12 +39,12 @@ public class ConfigManager {
     }
 
     public static FileConfiguration get(String fileName) {
-        return isFileLoaded(fileName) ? (FileConfiguration)configs.get(fileName) : null;
+        return isFileLoaded(fileName) ? configs.get(fileName) : null;
     }
 
     public static boolean update(String fileName, String path, Object value) {
-        if (isFileLoaded(fileName) && !((FileConfiguration)configs.get(fileName)).contains(path)) {
-            ((FileConfiguration)configs.get(fileName)).set(path, value);
+        if (isFileLoaded(fileName) && !(configs.get(fileName)).contains(path)) {
+            (configs.get(fileName)).set(path, value);
             return true;
         } else {
             return false;
@@ -53,27 +53,27 @@ public class ConfigManager {
 
     public static void set(String fileName, String path, Object value) {
         if (isFileLoaded(fileName)) {
-            ((FileConfiguration)configs.get(fileName)).set(path, value);
+            (configs.get(fileName)).set(path, value);
         }
 
     }
 
     public static void remove(String fileName, String path) {
         if (isFileLoaded(fileName)) {
-            ((FileConfiguration)configs.get(fileName)).set(path, (Object)null);
+            (configs.get(fileName)).set(path, (Object) null);
         }
 
     }
 
     public static boolean contains(String fileName, String path) {
-        return isFileLoaded(fileName) ? ((FileConfiguration)configs.get(fileName)).contains(path) : false;
+        return isFileLoaded(fileName) && (configs.get(fileName)).contains(path);
     }
 
     public void reload(String fileName) {
         File file = new File(this.plugin.getDataFolder(), fileName);
         if (isFileLoaded(fileName)) {
             try {
-                ((FileConfiguration)configs.get(fileName)).load(file);
+                (configs.get(fileName)).load(file);
             } catch (Exception var4) {
                 var4.printStackTrace();
             }
@@ -85,7 +85,7 @@ public class ConfigManager {
         File file = new File(this.plugin.getDataFolder(), fileName);
         if (isFileLoaded(fileName)) {
             try {
-                ((FileConfiguration)configs.get(fileName)).save(file);
+                (configs.get(fileName)).save(file);
             } catch (Exception var4) {
                 var4.printStackTrace();
             }
@@ -93,19 +93,20 @@ public class ConfigManager {
 
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     public void addComment(String fileName, String path, String... comments) {
-        if (isFileLoaded(fileName)) {
-            String[] var4 = comments;
-            int var5 = comments.length;
+        if (!isFileLoaded(fileName)) {
+            return;
+        }
 
-            for(int var6 = 0; var6 < var5; ++var6) {
-                String comment = var4[var6];
-                if (!((FileConfiguration)configs.get(fileName)).contains(path)) {
-                    ((FileConfiguration)configs.get(fileName)).set("_COMMENT_" + comments.length, " " + comment);
-                }
+        for (String comment : comments) {
+            if (!(configs.get(fileName)).contains(path)) {
+                (configs.get(fileName)).set("_COMMENT_" + comments.length, " " + comment);
             }
         }
+
 
     }
 }
