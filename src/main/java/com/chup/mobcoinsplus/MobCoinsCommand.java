@@ -1,6 +1,7 @@
 package com.chup.mobcoinsplus;
 
 import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CatchUnknown;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
@@ -8,6 +9,7 @@ import co.aikar.commands.annotation.Subcommand;
 import com.chup.mobcoinsplus.extras.ChatUtil;
 import com.chup.mobcoinsplus.extras.CoinsTop;
 import com.chup.mobcoinsplus.extras.Extras;
+import com.chup.mobcoinsplus.guis.MobShopGUI;
 import com.cryptomorin.xseries.XMaterial;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Bukkit;
@@ -44,6 +46,45 @@ public class MobCoinsCommand extends BaseCommand implements CommandExecutor {
         plugin.reloadConfig();
         String message = ChatUtil.color(plugin.getMessages().getString("reload"));
         sender.sendMessage(prefix + message);
+    }
+
+    @Subcommand("gui")
+    @CommandAlias("Mobshop|ms")
+    @Description("Opens MobCoins shop.")
+    public void onOpenGui(final Player player) {
+        if (!Config.getPermissionStatus()) {
+            new MobShopGUI(player, 1);
+            return;
+        }
+
+        if (player.hasPermission("mobcoinsplus.mobshop")) {
+            new MobShopGUI(player, 1);
+            return;
+        }
+
+        String message = plugin.getMessages().getString("no-permission");
+        player.sendMessage(prefix + ChatUtil.color(message));
+    }
+
+    @Subcommand("help")
+    @CatchUnknown
+    public void onHelp(final CommandSender sender) {
+        if (sender.isOp() || sender.hasPermission("mobcoinsplus.admin")) {
+            for (final String helpMessage : plugin.getMessages().getStringList("help-admin")) {
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', helpMessage));
+            }
+            return;
+        }
+
+        if (plugin.getConfig().contains("enable-player-help") && plugin.getConfig().getBoolean("enable-player-help")) {
+            for (final String helpMessage : plugin.getMessages().getStringList("help-player")) {
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', helpMessage));
+            }
+            return;
+        }
+
+        String message = plugin.getMessages().getString("no-permission");
+        sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
     }
 
     public void sendHelpMessage(Player player) {
