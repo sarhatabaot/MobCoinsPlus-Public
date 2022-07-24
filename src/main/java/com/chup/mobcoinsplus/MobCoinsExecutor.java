@@ -3,7 +3,7 @@ package com.chup.mobcoinsplus;
 import com.chup.mobcoinsplus.extras.CoinsTop;
 import com.chup.mobcoinsplus.extras.Extras;
 import com.chup.mobcoinsplus.extras.NBTEditor;
-import com.chup.mobcoinsplus.xseries.XMaterial;
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

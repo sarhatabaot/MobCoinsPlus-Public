@@ -4,7 +4,7 @@ import com.chup.mobcoinsplus.Config;
 import com.chup.mobcoinsplus.Main;
 import com.chup.mobcoinsplus.extras.Extras;
 import com.chup.mobcoinsplus.extras.PageUtil;
-import com.chup.mobcoinsplus.xseries.XMaterial;
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

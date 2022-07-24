@@ -3,7 +3,7 @@ package com.chup.mobcoinsplus.listeners;
 import com.chup.mobcoinsplus.Config;
 import com.chup.mobcoinsplus.Main;
 import com.chup.mobcoinsplus.extras.SLAPI;
-import com.chup.mobcoinsplus.xseries.XSound;
+import com.cryptomorin.xseries.XSound;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
@@ -14,7 +14,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 

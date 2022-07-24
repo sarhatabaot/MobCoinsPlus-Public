@@ -59,6 +59,15 @@
                                     <shadedPattern>com.chup.mobcoinsplus.xseries</shadedPattern>
                                 </relocation>
                             </relocations>
+                            <filters>
+                                <filter>
+                                    <artifact>com.cryptomorin.xseries:*</artifact>
+                                    <includes>
+                                        <include>com/cryptomorin/xseries/XSound*</include>
+                                        <include>com/cryptomorin/xseries/XMaterial*</include>
+                                    </includes>
+                                </filter>
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>

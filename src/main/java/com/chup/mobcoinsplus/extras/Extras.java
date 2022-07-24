@@ -2,7 +2,7 @@ package com.chup.mobcoinsplus.extras;
 
 import com.chup.mobcoinsplus.Config;
 import com.chup.mobcoinsplus.Main;
-import com.chup.mobcoinsplus.xseries.XMaterial;
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
