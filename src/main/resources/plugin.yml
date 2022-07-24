@@ -1,7 +1,7 @@
 main: com.chup.mobcoinsplus.Main
-version: 1.7.1
+version: ${project.version}
 api-version: 1.13
-name: MobCoinsPlus
+name: ${project.name}
 authors:
   - GupAChup
   - MyApaulogies
