@@ -2,7 +2,9 @@ package com.chup.mobcoinsplus;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Subcommand;
 import com.chup.mobcoinsplus.extras.ChatUtil;
 import com.chup.mobcoinsplus.extras.CoinsTop;
 import com.chup.mobcoinsplus.extras.Extras;
@@ -23,15 +25,25 @@ import java.util.*;
 
 @CommandAlias("mobcoins|mc")
 @Description("MobCoins commands.")
-public class MobCoinsExecutor extends BaseCommand implements CommandExecutor {
+public class MobCoinsCommand extends BaseCommand implements CommandExecutor {
     private Player player;
 
     String prefix = ChatUtil.color(Config.getPluginPrefix());
 
     private final Main plugin;
 
-    public MobCoinsExecutor(Main plugin) {
+    public MobCoinsCommand(Main plugin) {
         this.plugin = plugin;
+    }
+
+    @Subcommand("reload|rl")
+    @CommandPermission("mobcoinsplus.admin")
+    public void onReload(final @NotNull CommandSender sender) {
+        plugin.configManager.reload("messages.yml");
+        plugin.configManager.save("messages.yml");
+        plugin.reloadConfig();
+        String message = ChatUtil.color(plugin.getMessages().getString("reload"));
+        sender.sendMessage(prefix + message);
     }
 
     public void sendHelpMessage(Player player) {
