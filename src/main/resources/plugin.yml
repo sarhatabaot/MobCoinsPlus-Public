@@ -13,3 +13,9 @@ commands:
   mobshop:
     aliases: ms
     description: Opens MobCoins shop.
+permissions:
+  mobcoinsplus.admin:
+    mobcoinsplus.mobshop: true
+    mobcoinsplus.amount: true
+    mobcoinsplus.top: true
+    mobcoinsplus.*: true
