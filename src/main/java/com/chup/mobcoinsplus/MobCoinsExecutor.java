@@ -2,8 +2,8 @@ package com.chup.mobcoinsplus;
 
 import com.chup.mobcoinsplus.extras.CoinsTop;
 import com.chup.mobcoinsplus.extras.Extras;
-import com.chup.mobcoinsplus.extras.NBTEditor;
 import com.cryptomorin.xseries.XMaterial;
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -243,9 +243,11 @@ public class MobCoinsExecutor implements CommandExecutor {
                             } else if (args.length == 2 && args[0].equalsIgnoreCase("additem")) {
                                 if (args[1].equals("dummy")) {
                                     ItemStack dummy = new ItemStack(Extras.getColor(Config.getDummyColor()));
-                                    Random dummyRan = new Random();
+                                    Random dummyRan = plugin.getRandom();
                                     int dummyRanChoice = dummyRan.nextInt(1000000000);
-                                    dummy = NBTEditor.set(dummy, dummyRanChoice, "RandomToPreventSimilarity");
+                                    NBTItem nbtItem = new NBTItem(dummy);
+                                    nbtItem.setInteger("RandomToPreventSimilarity", dummyRanChoice);
+                                    dummy = nbtItem.getItem();
                                     Main.allItems.add(dummy);
                                     Main.cost.put(dummy, 0);
                                     String message = plugin.getMessages().getString("item-added");

@@ -85,7 +85,7 @@ public class CoinListener implements Listener {
                     if (!Main.points.containsKey(player.getUniqueId())) {
                         Main.points.put(player.getUniqueId(), 0);
                     }
-                    Random ran = new Random();
+                    Random ran = plugin.getRandom();
                     int choice = ran.nextInt(100) + 1;
                     int chance = Config.getChanceMob(dead.getType().toString());
                     int amount = Config.getAmountMob(dead.getType().toString());
