@@ -8,16 +8,19 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public class JoinListener implements Listener {
 
-    private static Main main;
-    public JoinListener(Main main) { JoinListener.main = main; }
+    private final Main plugin;
+
+    public JoinListener(Main main) {
+        this.plugin = main;
+    }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
-        if(!Main.points.containsKey(player.getUniqueId())) {
+        if (!Main.points.containsKey(player.getUniqueId())) {
             int amount = 0;
-            if(main.getConfig().contains("starting-amount")) {
-                amount = main.getConfig().getInt("starting-amount");
+            if (plugin.getConfig().contains("starting-amount")) {
+                amount = plugin.getConfig().getInt("starting-amount");
             }
             Main.points.put(player.getUniqueId(), amount);
         }
