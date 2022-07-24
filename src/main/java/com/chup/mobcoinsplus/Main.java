@@ -1,11 +1,10 @@
 package com.chup.mobcoinsplus;
 
 import com.chup.mobcoinsplus.configuration.ConfigManager;
-import com.chup.mobcoinsplus.extras.Extras;
-import com.chup.mobcoinsplus.extras.MetricsLite;
 import com.chup.mobcoinsplus.extras.SLAPI;
 import com.chup.mobcoinsplus.extras.SpigotExpansion;
 import com.chup.mobcoinsplus.listeners.*;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -65,7 +64,7 @@ public class Main extends JavaPlugin {
         System.out.println("MobCoinsPlus >> Enabled Successfully!");
         new Config(this);
 
-        MetricsLite metrics = new MetricsLite(this, 9663);
+        Metrics metrics = new Metrics(this, 9663);
 
         this.configManager = new ConfigManager(this);
         this.configManager.load("messages.yml");

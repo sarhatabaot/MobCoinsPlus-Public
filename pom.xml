@@ -22,6 +22,7 @@
         <spigot.version>1.18.2-R0.1-SNAPSHOT</spigot.version>
         <annotations.version>23.0.0</annotations.version>
         <papi.version>2.11.2</papi.version>
+        <bstats.version>3.0.0</bstats.version>
     </properties>
 
     <build>
@@ -47,6 +48,12 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.bstats</pattern>
+                                    <shadedPattern>com.chup.mobcoinsplus.extras</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
@@ -93,6 +100,12 @@
             <artifactId>placeholderapi</artifactId>
             <version>${papi.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+            <version>${bstats.version}</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>
