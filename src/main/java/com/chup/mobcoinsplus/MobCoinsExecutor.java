@@ -9,10 +9,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -30,16 +30,12 @@ public class MobCoinsExecutor implements CommandExecutor {
 
     public void sendHelpMessage(Player player) {
         if (player.isOp() || player.hasPermission("mobcoinsplus.admin")) {
-            Iterator helpIterator = plugin.getMessages().getStringList("help-admin").iterator();
-            while (helpIterator.hasNext()) {
-                String helpMessage = (String) helpIterator.next();
+            for (final String helpMessage : plugin.getMessages().getStringList("help-admin")) {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', helpMessage));
             }
         } else {
             if (plugin.getConfig().contains("enable-player-help") && plugin.getConfig().getBoolean("enable-player-help")) {
-                Iterator helpIterator = plugin.getMessages().getStringList("help-player").iterator();
-                while (helpIterator.hasNext()) {
-                    String helpMessage = (String) helpIterator.next();
+                for (final String helpMessage : plugin.getMessages().getStringList("help-player")) {
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&', helpMessage));
                 }
             } else {
@@ -50,7 +46,7 @@ public class MobCoinsExecutor implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
 
         String mobCoinsCommand = Config.getMainCommand();
         String currencyName = Config.getCurrencyName();
