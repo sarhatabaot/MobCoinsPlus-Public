@@ -40,7 +40,7 @@ public class Main extends JavaPlugin {
         try {
             points = (HashMap<UUID, Integer>) SLAPI.load("./plugins/MobCoinsPlus/data/coins.bin");
         } catch (FileNotFoundException e) {
-            System.out.println("MobCoinsPlus >> Coins file generating!");
+            getLogger().info("Coins file generating!");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -48,7 +48,7 @@ public class Main extends JavaPlugin {
         try {
             allItems = (ArrayList<ItemStack>) SLAPI.bukkitLoad("./plugins/MobCoinsPlus/data/items.bin");
         } catch (FileNotFoundException e) {
-            System.out.println("MobCoinsPlus >> Items file generating!");
+            getLogger().info("Items file generating!");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -56,15 +56,15 @@ public class Main extends JavaPlugin {
         try {
             cost = (HashMap<ItemStack, Integer>) SLAPI.bukkitLoad("./plugins/MobCoinsPlus/data/cost.bin");
         } catch (FileNotFoundException e) {
-            System.out.println("MobCoinsPlus >> Cost file generating!");
+            getLogger().info("Cost file generating!");
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        System.out.println("MobCoinsPlus >> Enabled Successfully!");
+        getLogger().info("Enabled Successfully!");
         new Config(this);
 
-        Metrics metrics = new Metrics(this, 9663);
+        new Metrics(this, 9663);
 
         this.configManager = new ConfigManager(this);
         this.configManager.load("messages.yml");
@@ -81,7 +81,7 @@ public class Main extends JavaPlugin {
         try {
             new SpigotExpansion().register();
         } catch (NoClassDefFoundError e) {
-            System.out.println("MobCoinsPlus >> Error: No placeholder plugin detected. Please install PAPI to use placeholders.");
+            getLogger().severe("Error: No placeholder plugin detected. Please install PAPI to use placeholders.");
         }
     }
 
