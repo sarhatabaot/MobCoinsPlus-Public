@@ -14,8 +14,7 @@ public class PageUtil {
         for (int i = lowerBound; i < upperBound; i++) {
             try {
                 newItems.add((items.get(i)));
-            } catch (IndexOutOfBoundsException e) {
-                continue;
+            } catch (IndexOutOfBoundsException ignored) {
             }
         }
         return newItems;
