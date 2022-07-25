@@ -28,7 +28,6 @@ import java.util.*;
 @CommandAlias("mobcoins|mc")
 @Description("MobCoins commands.")
 public class MobCoinsCommand extends BaseCommand {
-    private Player player;
 
     String prefix = ChatUtil.color(Config.getPluginPrefix());
 
@@ -45,7 +44,7 @@ public class MobCoinsCommand extends BaseCommand {
         plugin.getConfigManager().save("messages.yml");
         plugin.reloadConfig();
         String message = ChatUtil.color(plugin.getMessages().getString("reload"));
-        sender.sendMessage(prefix + message);
+        ChatUtil.sendPrefixedMessage(sender,message);
     }
 
     @Subcommand("gui")
@@ -131,10 +130,10 @@ public class MobCoinsCommand extends BaseCommand {
         String decimalFormat = "###,###,###,###,###,###,###,###";
         DecimalFormat formatter = new DecimalFormat(decimalFormat);
         int cycle = 0;
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getMessages().getString("mobcoins-top-title")));
+        ChatUtil.sendPrefixedMessage(sender,plugin.getMessages().getString("mobcoins-top-title"));
         for (Map.Entry<UUID, Integer> en : top.entrySet()) {
             String name = Bukkit.getServer().getOfflinePlayer(en.getKey()).getName();
-            String format = ChatColor.translateAlternateColorCodes('&', plugin.getMessages().getString("mobcoins-top-format"));
+            String format = ChatUtil.color(plugin.getMessages().getString("mobcoins-top-format"));
             format = format.replace("{name}", name);
             format = format.replace("{amount}", formatter.format(en.getValue()));
             format = format.replace("{position}", Integer.toString(cycle + 1));
@@ -223,7 +222,7 @@ public class MobCoinsCommand extends BaseCommand {
         id = id - 1;
         if (!validId(id)) {
             String message = plugin.getMessages().getString("invalid-id");
-            player.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
+            sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
             return;
         }
 
@@ -231,7 +230,7 @@ public class MobCoinsCommand extends BaseCommand {
         Main.getCost().remove(Main.getAllItems().get(id));
         Main.getAllItems().remove(id);
         String message = plugin.getMessages().getString("item-removed");
-        player.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
+        sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
     }
 
     private boolean validId(int id) {
@@ -261,7 +260,7 @@ public class MobCoinsCommand extends BaseCommand {
         int playerCoins = Extras.getCoins(target.getPlayer().getUniqueId());
         if ((playerCoins - newAmount) < 0) {
             String message = plugin.getMessages().getString("target-negative-coins");
-            player.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
+            sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
             return;
         }
 
@@ -286,12 +285,12 @@ public class MobCoinsCommand extends BaseCommand {
     }
 
     @Default
-    public void onBalance() {
-        int playerCoins = Extras.getCoins(player.getUniqueId());
+    public void onBalance(final Player sender) {
+        int playerCoins = Extras.getCoins(sender.getUniqueId());
         String message = plugin.getMessages().getString("self-check");
         message = message.replace("{total-coins}", Integer.toString(playerCoins));
         message = message.replace("{currency}", Config.getCurrencyName());
-        player.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
+        sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
     }
 
     @Subcommand("edit")
