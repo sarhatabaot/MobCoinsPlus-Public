@@ -1,5 +1,6 @@
 # User-specific stuff
-.idea/
+../.idea/
+.idea
 
 *.iml
 *.ipr
@@ -95,7 +96,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-target/
+mobshopplus-plugin/target/
 
 pom.xml.tag
 pom.xml.releaseBackup

@@ -1,9 +1,9 @@
 package com.chup.mobcoinsplus.listeners;
 
-import com.chup.mobcoinsplus.Config;
 import com.chup.mobcoinsplus.Main;
 import com.chup.mobcoinsplus.extras.ChatUtil;
 import com.chup.mobcoinsplus.extras.SLAPI;
+import com.chup.mobcoinsplus.Config;
 import com.cryptomorin.xseries.XSound;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Arrow;

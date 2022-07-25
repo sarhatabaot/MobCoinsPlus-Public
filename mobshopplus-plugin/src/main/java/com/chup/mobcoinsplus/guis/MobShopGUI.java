@@ -55,7 +55,7 @@ public class MobShopGUI {
         gui.setItem(50, next);
 
         GuiItem fillerItem = ItemBuilder.from(Extras.getColor(Config.getBorderColor())).asGuiItem();
-        this.gui.getFiller().fill(fillerItem);
+        this.gui.getFiller().fillBorder(fillerItem);
     }
 
     private @NotNull List<GuiItem> getAsGuiItems() {

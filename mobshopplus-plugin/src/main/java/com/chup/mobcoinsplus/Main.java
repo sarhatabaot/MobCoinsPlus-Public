@@ -1,11 +1,14 @@
 package com.chup.mobcoinsplus;
 
 import co.aikar.commands.PaperCommandManager;
+import com.chup.mobcoinsplus.guis.MobShopGUI;
 import com.chup.mobcoinsplus.configuration.ConfigManager;
 import com.chup.mobcoinsplus.extras.SLAPI;
 import com.chup.mobcoinsplus.extras.SpigotExpansion;
-import com.chup.mobcoinsplus.guis.MobShopGUI;
-import com.chup.mobcoinsplus.listeners.*;
+import com.chup.mobcoinsplus.listeners.CoinListener;
+import com.chup.mobcoinsplus.listeners.DeathListener;
+import com.chup.mobcoinsplus.listeners.JoinListener;
+import com.chup.mobcoinsplus.mobcoinsplusapi.MobCoinsPlusProvider;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -57,17 +60,18 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        MobCoinsPlusProvider provider = new MobCoinsPlusProvider();
         this.random = new Random();
         setAllItems(new ArrayList<>());
         setCost(new HashMap<>());
 
-        File file = new File(this.getDataFolder() + "/data");
+        File file = new File(this.getDataFolder() + File.separator+ "data");
         if(!file.exists()) {
             file.mkdir();
         }
 
         try {
-            setPoints((HashMap<UUID, Integer>) SLAPI.load("./plugins/MobCoinsPlus/data/coins.bin"));
+            setPoints((HashMap<UUID, Integer>) SLAPI.load(getDataPath("coins.bin")));
         } catch (FileNotFoundException e) {
             getLogger().info("Coins file generating!");
         } catch (Exception e) {
@@ -75,7 +79,7 @@ public class Main extends JavaPlugin {
         }
 
         try {
-            setAllItems((ArrayList<ItemStack>) SLAPI.bukkitLoad("./plugins/MobCoinsPlus/data/items.bin"));
+            setAllItems((ArrayList<ItemStack>) SLAPI.bukkitLoad(getDataPath("items.bin")));
         } catch (FileNotFoundException e) {
             getLogger().info("Items file generating!");
         } catch (Exception e) {
@@ -83,7 +87,7 @@ public class Main extends JavaPlugin {
         }
 
         try {
-            setCost((HashMap<ItemStack, Integer>) SLAPI.bukkitLoad("./plugins/MobCoinsPlus/data/cost.bin"));
+            setCost((HashMap<ItemStack, Integer>) SLAPI.bukkitLoad(getDataPath("cost.bin")));
         } catch (FileNotFoundException e) {
             getLogger().info("Cost file generating!");
         } catch (Exception e) {
@@ -105,7 +109,6 @@ public class Main extends JavaPlugin {
 
         this.gui = new MobShopGUI(this);
         Bukkit.getPluginManager().registerEvents(new CoinListener(this), this);
-        Bukkit.getPluginManager().registerEvents(new CommandListener(), this);
         Bukkit.getPluginManager().registerEvents(new JoinListener(this), this);
         Bukkit.getPluginManager().registerEvents(new DeathListener(this), this);
 
@@ -120,23 +123,27 @@ public class Main extends JavaPlugin {
     public void onDisable() {
         this.random = null;
         try {
-            SLAPI.save(getPoints(), "./plugins/MobCoinsPlus/data/coins.bin");
+            SLAPI.save(getPoints(), getDataPath("coins.bin"));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
-            SLAPI.bukkitSave(getAllItems(), "./plugins/MobCoinsPlus/data/items.bin");
+            SLAPI.bukkitSave(getAllItems(), getDataPath("items.bin"));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
-            SLAPI.bukkitSave(getCost(), "./plugins/MobCoinsPlus/data/cost.bin");
+            SLAPI.bukkitSave(getCost(), getDataPath("cost.bin"));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    private String getDataPath(final String fileName) {
+        return getDataFolder() + File.separator + "data" + File.separator + fileName;
     }
 
     public String format(String str) {

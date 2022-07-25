@@ -1,9 +1,9 @@
 package com.chup.mobcoinsplus.listeners;
 
-import com.chup.mobcoinsplus.Config;
 import com.chup.mobcoinsplus.Main;
 import com.chup.mobcoinsplus.extras.ChatUtil;
 import com.chup.mobcoinsplus.extras.Extras;
+import com.chup.mobcoinsplus.Config;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
