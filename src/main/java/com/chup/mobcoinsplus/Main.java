@@ -62,12 +62,12 @@ public class Main extends JavaPlugin {
         setCost(new HashMap<>());
 
         File file = new File(this.getDataFolder() + "/data");
-        if(!file.exists()) {
+        if (!file.exists()) {
             file.mkdir();
         }
 
         try {
-            setPoints((HashMap<UUID, Integer>) SLAPI.load("./plugins/MobCoinsPlus/data/coins.bin"));
+            setPoints((HashMap<UUID, Integer>) SLAPI.load(getDataPath("coins.bin")));
         } catch (FileNotFoundException e) {
             getLogger().info("Coins file generating!");
         } catch (Exception e) {
@@ -75,7 +75,7 @@ public class Main extends JavaPlugin {
         }
 
         try {
-            setAllItems((ArrayList<ItemStack>) SLAPI.bukkitLoad("./plugins/MobCoinsPlus/data/items.bin"));
+            setAllItems((ArrayList<ItemStack>) SLAPI.bukkitLoad(getDataPath("items.bin")));
         } catch (FileNotFoundException e) {
             getLogger().info("Items file generating!");
         } catch (Exception e) {
@@ -83,12 +83,13 @@ public class Main extends JavaPlugin {
         }
 
         try {
-            setCost((HashMap<ItemStack, Integer>) SLAPI.bukkitLoad("./plugins/MobCoinsPlus/data/cost.bin"));
+            setCost((HashMap<ItemStack, Integer>) SLAPI.bukkitLoad(getDataPath("cost.bin")));
         } catch (FileNotFoundException e) {
             getLogger().info("Cost file generating!");
         } catch (Exception e) {
             e.printStackTrace();
         }
+
 
         getLogger().info("Enabled Successfully!");
         Config.init(this);
@@ -105,7 +106,6 @@ public class Main extends JavaPlugin {
 
         this.gui = new MobShopGUI(this);
         Bukkit.getPluginManager().registerEvents(new CoinListener(this), this);
-        Bukkit.getPluginManager().registerEvents(new CommandListener(), this);
         Bukkit.getPluginManager().registerEvents(new JoinListener(this), this);
         Bukkit.getPluginManager().registerEvents(new DeathListener(this), this);
 
@@ -120,23 +120,22 @@ public class Main extends JavaPlugin {
     public void onDisable() {
         this.random = null;
         try {
-            SLAPI.save(getPoints(), "./plugins/MobCoinsPlus/data/coins.bin");
+            SLAPI.save(getPoints(), getDataPath("coins.bin"));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
-            SLAPI.bukkitSave(getAllItems(), "./plugins/MobCoinsPlus/data/items.bin");
+            SLAPI.bukkitSave(getAllItems(), getDataPath("items.bin"));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
-            SLAPI.bukkitSave(getCost(), "./plugins/MobCoinsPlus/data/cost.bin");
+            SLAPI.bukkitSave(getCost(), getDataPath("cost.bin"));
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     public String format(String str) {
@@ -161,5 +160,9 @@ public class Main extends JavaPlugin {
 
     public MobShopGUI getGui() {
         return gui;
+    }
+
+    private String getDataPath(final String fileName) {
+        return getDataFolder() + File.separator + "data" + File.separator + fileName;
     }
 }
