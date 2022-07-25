@@ -4,7 +4,7 @@ import co.aikar.commands.PaperCommandManager;
 import com.chup.mobcoinsplus.configuration.ConfigManager;
 import com.chup.mobcoinsplus.extras.SLAPI;
 import com.chup.mobcoinsplus.extras.SpigotExpansion;
-import com.chup.mobcoinsplus.guis.ClickListener;
+import com.chup.mobcoinsplus.guis.MobShopGUI;
 import com.chup.mobcoinsplus.listeners.*;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -27,6 +27,7 @@ public class Main extends JavaPlugin {
     private static List<ItemStack> allItems;
     private static Map<ItemStack, Integer> cost;
     private ConfigManager configManager;
+    private MobShopGUI gui;
 
     private Random random;
 
@@ -101,8 +102,9 @@ public class Main extends JavaPlugin {
         PaperCommandManager paperCommandManager = new PaperCommandManager(this);
         paperCommandManager.registerCommand(new MobCoinsCommand(this));
 
+
+        this.gui = new MobShopGUI(this);
         Bukkit.getPluginManager().registerEvents(new CoinListener(this), this);
-        Bukkit.getPluginManager().registerEvents(new ClickListener(this), this);
         Bukkit.getPluginManager().registerEvents(new CommandListener(), this);
         Bukkit.getPluginManager().registerEvents(new JoinListener(this), this);
         Bukkit.getPluginManager().registerEvents(new DeathListener(this), this);
@@ -155,5 +157,9 @@ public class Main extends JavaPlugin {
 
     public void setConfigManager(ConfigManager configManager) {
         this.configManager = configManager;
+    }
+
+    public MobShopGUI getGui() {
+        return gui;
     }
 }

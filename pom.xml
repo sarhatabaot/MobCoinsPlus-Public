@@ -65,6 +65,10 @@
                                     <pattern>de.tr7zw.changeme.nbtapi</pattern>
                                     <shadedPattern>com.chup.mobcoinsplus.extras</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>dev.triumphteam.gui</pattern>
+                                    <shadedPattern>com.chup.mobcoinsplus.gui</shadedPattern>
+                                </relocation>
                             </relocations>
                             <filters>
                                 <filter>

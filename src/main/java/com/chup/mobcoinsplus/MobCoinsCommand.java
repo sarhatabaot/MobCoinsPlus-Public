@@ -53,12 +53,12 @@ public class MobCoinsCommand extends BaseCommand {
     @Description("Opens MobCoins shop.")
     public void onOpenGui(final Player player) {
         if (!Config.getPermissionStatus()) {
-            new MobShopGUI(player, 1);
+            plugin.getGui().openGui(player, 1);
             return;
         }
 
         if (player.hasPermission("mobcoinsplus.mobshop")) {
-            new MobShopGUI(player, 1);
+            plugin.getGui().openGui(player, 1);
             return;
         }
 

@@ -2,119 +2,144 @@ package com.chup.mobcoinsplus.guis;
 
 import com.chup.mobcoinsplus.Config;
 import com.chup.mobcoinsplus.Main;
+import com.chup.mobcoinsplus.extras.ChatUtil;
 import com.chup.mobcoinsplus.extras.Extras;
-import com.chup.mobcoinsplus.extras.PageUtil;
 import com.cryptomorin.xseries.XMaterial;
-import org.bukkit.Bukkit;
+import com.cryptomorin.xseries.XSound;
+import dev.triumphteam.gui.builder.item.ItemBuilder;
+import dev.triumphteam.gui.components.GuiAction;
+import dev.triumphteam.gui.guis.Gui;
+import dev.triumphteam.gui.guis.GuiItem;
+import dev.triumphteam.gui.guis.PaginatedGui;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 public class MobShopGUI {
-
+    private final PaginatedGui gui;
+    private final Main plugin;
+    private final String prefix = ChatUtil.color(Config.getPluginPrefix());
     DecimalFormat formatter = new DecimalFormat("###,###,###,###,###,###,###,###");
 
-    public MobShopGUI(Player player, int page) {
+    public MobShopGUI(final Main plugin) {
+        this.plugin = plugin;
+        final String name = Config.getMobShopGUIName();
+        this.gui = Gui.paginated()
+                .title(Component.text(name))
+                .rows(6)
+                .create();
 
-        String name = Config.getMobShopGUIName();
-        String currency = Config.getCurrencyName();
-        String currencySymbol = Config.getCurrencySymbol();
+        gui.setDefaultClickAction(event -> event.setCancelled(true));
 
-        Inventory gui = Bukkit.createInventory(null, 54, name);
-        ArrayList<ItemStack> allItems = new ArrayList<>(Main.getAllItems());
+        gui.addItem(getAsGuiItems().toArray(new GuiItem[]{}));
 
-        ItemStack left;
-        ItemMeta leftMeta;
-        if (PageUtil.isPageValid(allItems, page - 1, 28)) {
-            int nextPage = page - 1;
-            left = new ItemStack(XMaterial.ARROW.parseMaterial());
-            leftMeta = left.getItemMeta();
-            leftMeta.setDisplayName(ChatColor.YELLOW + "" + ChatColor.ITALIC + "Click to go left");
-            leftMeta.setLore(Collections.singletonList(ChatColor.GRAY + "" + ChatColor.ITALIC + "Page - " + nextPage));
-        } else {
-            left = new ItemStack(Extras.getColor(Config.getBorderColor()));
-            leftMeta = left.getItemMeta();
-        }
-        left.setItemMeta(leftMeta);
-        gui.setItem(48, left);
+        GuiItem previous = ItemBuilder.from(XMaterial.ARROW.parseMaterial())
+                .name(Component.text("Previous"))
+                .lore(Component.text("Page - " + gui.getPrevPageNum()))
+                .asGuiItem(event -> gui.previous());
 
-        ItemStack right;
-        ItemMeta rightMeta;
-        if (PageUtil.isPageValid(allItems, page + 1, 28)) {
-            int nextPage = page + 1;
-            right = new ItemStack(XMaterial.ARROW.parseMaterial());
-            rightMeta = right.getItemMeta();
-            rightMeta.setDisplayName(ChatColor.YELLOW + "" + ChatColor.ITALIC + "Click to go right");
-            rightMeta.setLore(Collections.singletonList(ChatColor.GRAY + "" + ChatColor.ITALIC + "Page - " + nextPage));
-        } else {
-            right = new ItemStack(Extras.getColor(Config.getBorderColor()));
-            rightMeta = right.getItemMeta();
-        }
-        right.setItemMeta(rightMeta);
-        gui.setItem(50, right);
+        GuiItem next = ItemBuilder.from(XMaterial.ARROW.parseMaterial())
+                .name(Component.text("Next"))
+                .lore(Component.text("Page - " + gui.getNextPageNum()))
+                .asGuiItem(event -> gui.next());
 
-        ItemStack coins;
-        ItemMeta coinsMeta;
-        coins = new ItemStack(XMaterial.PRISMARINE_CRYSTALS.parseMaterial());
-        coinsMeta = coins.getItemMeta();
-        int number;
-        if(Main.getPoints().containsKey(player.getUniqueId())) {
-            number = Main.getPoints().get(player.getUniqueId());
-        } else {
-            number = 0;
-        }
-        if(Main.getPoints().containsKey(player.getUniqueId())) {
-            if(Config.getCurrencySymbolStatus()) {
-                coinsMeta.setDisplayName(ChatColor.AQUA + currency + ": " + ChatColor.GRAY + formatter.format(number) + currencySymbol);
-            } else {
-                coinsMeta.setDisplayName(ChatColor.AQUA + currency + ": " + ChatColor.GRAY + formatter.format(number));
+        gui.setItem(48, previous);
+        gui.setItem(50, next);
+
+        GuiItem fillerItem = ItemBuilder.from(Extras.getColor(Config.getBorderColor())).asGuiItem();
+        this.gui.getFiller().fill(fillerItem);
+    }
+
+    private @NotNull List<GuiItem> getAsGuiItems() {
+        List<GuiItem> guiItems = new ArrayList<>();
+
+        GuiAction<InventoryClickEvent> buyAction = event -> {
+            final Player player = (Player) event.getWhoClicked();
+            if (!Main.getPoints().containsKey(player.getUniqueId())) {
+                String message = plugin.getMessages().getString("insufficient-coins");
+                player.sendMessage(prefix + ChatUtil.color(message));
+                player.playSound(player.getLocation(), XSound.ENTITY_VILLAGER_NO.parseSound(), 1.0F, 1.0F);
+                return;
             }
-        } else {
+
+            if (!Main.getCost().containsKey(event.getCurrentItem())) {
+                String message = plugin.getMessages().getString("item-unknown");
+                player.sendMessage(prefix + ChatUtil.color(message));
+                player.playSound(player.getLocation(), XSound.ENTITY_VILLAGER_NO.parseSound(), 1.0F, 1.0F);
+                player.closeInventory();
+                return;
+            }
+            if (Main.getPoints().get(player.getUniqueId()) < Main.getCost().get(event.getCurrentItem())) {
+                String message = plugin.getMessages().getString("insufficient-coins");
+                player.sendMessage(prefix + ChatUtil.color(message));
+                player.playSound(player.getLocation(), XSound.ENTITY_VILLAGER_NO.parseSound(), 1.0F, 1.0F);
+                return;
+            }
+
+            int price = Main.getCost().get(event.getCurrentItem());
+            int balance = Main.getPoints().get(player.getUniqueId());
+
+            if (player.getInventory().firstEmpty() == -1) {
+                String message = plugin.getMessages().getString("inventory-full");
+                player.sendMessage(prefix + ChatUtil.color(message));
+                player.playSound(player.getLocation(), XSound.ENTITY_VILLAGER_NO.parseSound(), 1.0F, 1.0F);
+                return;
+            }
+
+            Main.getPoints().put(player.getUniqueId(), balance - price);
+            player.getInventory().setItem(player.getInventory().firstEmpty(), event.getCurrentItem().clone());
+            player.closeInventory();
+            String message = plugin.getMessages().getString("item-purchased");
+            player.sendMessage(prefix + ChatUtil.color(message));
+            player.playSound(player.getLocation(), XSound.ENTITY_PLAYER_LEVELUP.parseSound(), 1.0F, 1.0F);
+        };
+
+        for (ItemStack itemStack : Main.getAllItems()) {
+            guiItems.add(ItemBuilder.from(itemStack)
+                    .asGuiItem(buyAction));
+        }
+        return guiItems;
+    }
+
+    public void openGui(final Player player, final int page) {
+        GuiItem coinsDisplay = ItemBuilder.from(XMaterial.PRISMARINE_CRYSTALS.parseMaterial())
+                .name(Component.text(getCoinsDisplayName(player))).asGuiItem();
+
+        this.gui.setItem(49, coinsDisplay);
+
+        this.gui.open(player, page);
+    }
+
+    private @NotNull String getCoinsDisplayName(final @NotNull Player player) {
+        final String currency = Config.getCurrencyName();
+        final String currencySymbol = Config.getCurrencySymbol();
+        final int amount = getPointAmount(player.getUniqueId());
+        if (Main.getPoints().containsKey(player.getUniqueId())) {
             if (Config.getCurrencySymbolStatus()) {
-                coinsMeta.setDisplayName(ChatColor.AQUA + currency + ": " + ChatColor.GRAY + "0" + currencySymbol);
-            } else {
-                coinsMeta.setDisplayName(ChatColor.AQUA + currency + ": " + ChatColor.GRAY + "0");
+                return ChatColor.AQUA + currency + ": " + ChatColor.GRAY + formatter.format(amount) + currencySymbol;
             }
+            return ChatColor.AQUA + currency + ": " + ChatColor.GRAY + formatter.format(amount);
         }
-        coins.setItemMeta(coinsMeta);
 
-        gui.setItem(49, coins);
-
-        ItemStack background = new ItemStack(Extras.getColor(Config.getBorderColor()));
-
-        gui.setItem(0, background);
-        gui.setItem(1, background);
-        gui.setItem(2, background);
-        gui.setItem(3, background);
-        gui.setItem(4, background);
-        gui.setItem(5, background);
-        gui.setItem(6, background);
-        gui.setItem(7, background);
-        gui.setItem(8, background);
-        gui.setItem(9, background);
-        gui.setItem(18, background);
-        gui.setItem(27, background);
-        gui.setItem(36, background);
-        gui.setItem(45, background);
-        gui.setItem(46, background);
-        gui.setItem(47, background);
-        gui.setItem(51, background);
-        gui.setItem(52, background);
-        gui.setItem(53, background);
-        gui.setItem(44, background);
-        gui.setItem(35, background);
-        gui.setItem(26, background);
-        gui.setItem(17, background);
-
-        for (ItemStack item : PageUtil.getPageItems(allItems, page, 28)) {
-            gui.setItem(gui.firstEmpty(), item);
+        if (Config.getCurrencySymbolStatus()) {
+            return ChatColor.AQUA + currency + ": " + ChatColor.GRAY + "0" + currencySymbol;
         }
-        player.openInventory(gui);
+
+        return ChatColor.AQUA + currency + ": " + ChatColor.GRAY + "0";
+    }
+
+    private int getPointAmount(final UUID uuid) {
+        if (Main.getPoints().containsKey(uuid)) {
+            return Main.getPoints().get(uuid);
+        }
+        return 0;
     }
 }
