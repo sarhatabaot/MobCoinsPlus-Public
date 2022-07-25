@@ -90,7 +90,7 @@ public class Main extends JavaPlugin {
         }
 
         getLogger().info("Enabled Successfully!");
-        new Config(this);
+        Config.init(this);
 
         new Metrics(this, 9663);
 

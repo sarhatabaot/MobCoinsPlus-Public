@@ -3,7 +3,7 @@ package com.chup.mobcoinsplus;
 public class Config {
     private static Main main;
 
-    public Config(Main main) {
+    public static void init(Main main) {
         Config.main = main;
         main.getConfig().options().copyDefaults();
         main.saveDefaultConfig();
