@@ -1,7 +1,6 @@
 package com.chup.mobcoinsplus.configuration;
 
 import com.chup.mobcoinsplus.Main;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -60,7 +59,7 @@ public class ConfigManager {
 
     public static void remove(String fileName, String path) {
         if (isFileLoaded(fileName)) {
-            (configs.get(fileName)).set(path, (Object) null);
+            (configs.get(fileName)).set(path, null);
         }
 
     }
@@ -90,23 +89,6 @@ public class ConfigManager {
                 var4.printStackTrace();
             }
         }
-
-    }
-
-    /**
-     * @deprecated
-     */
-    public void addComment(String fileName, String path, String... comments) {
-        if (!isFileLoaded(fileName)) {
-            return;
-        }
-
-        for (String comment : comments) {
-            if (!(configs.get(fileName)).contains(path)) {
-                (configs.get(fileName)).set("_COMMENT_" + comments.length, " " + comment);
-            }
-        }
-
 
     }
 }
