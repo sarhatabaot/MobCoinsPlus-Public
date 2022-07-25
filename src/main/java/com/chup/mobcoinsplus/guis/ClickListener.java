@@ -1,4 +1,4 @@
-package com.chup.mobcoinsplus.listeners;
+package com.chup.mobcoinsplus.guis;
 
 import com.chup.mobcoinsplus.Config;
 import com.chup.mobcoinsplus.Main;
