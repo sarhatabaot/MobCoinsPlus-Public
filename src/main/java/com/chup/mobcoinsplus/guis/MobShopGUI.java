@@ -27,7 +27,7 @@ public class MobShopGUI {
     private final PaginatedGui gui;
     private final Main plugin;
     private final String prefix = ChatUtil.color(Config.getPluginPrefix());
-    DecimalFormat formatter = new DecimalFormat("###,###,###,###,###,###,###,###");
+    final DecimalFormat formatter = new DecimalFormat("###,###,###,###,###,###,###,###");
 
     public MobShopGUI(final Main plugin) {
         this.plugin = plugin;

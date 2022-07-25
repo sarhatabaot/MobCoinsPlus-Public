@@ -2,6 +2,7 @@ package com.chup.mobcoinsplus.listeners;
 
 import com.chup.mobcoinsplus.Config;
 import com.chup.mobcoinsplus.Main;
+import com.chup.mobcoinsplus.extras.ChatUtil;
 import com.chup.mobcoinsplus.extras.SLAPI;
 import com.cryptomorin.xseries.XSound;
 import org.bukkit.ChatColor;
@@ -65,7 +66,7 @@ public class CoinListener implements Listener {
                         String message = plugin.getMessages().getString("coins-collected");
                         message = message.replace("{amount}", Integer.toString(finalAmount));
                         message = message.replace("{currency}", currency);
-                        player.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
+                        ChatUtil.sendPrefixedMessage(player, message);
                     }
                     if (Config.getSoundStatus()) {
                         player.playSound(player.getLocation(), XSound.ENTITY_EXPERIENCE_ORB_PICKUP.parseSound(), 1.0F, 1.0F);
@@ -100,10 +101,10 @@ public class CoinListener implements Listener {
                     if (choice <= chance && choice > 0) {
                         Main.getPoints().put(player.getUniqueId(), Main.getPoints().get(player.getUniqueId()) + finalAmount);
                         if (Config.getMessageStatus()) {
-                            String message = plugin.getMessages().getString("coins-collected");
-                            message = message.replace("{amount}", Integer.toString(finalAmount));
-                            message = message.replace("{currency}", currency);
-                            player.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
+                            String message = plugin.getMessages().getString("coins-collected")
+                                    .replace("{amount}", Integer.toString(finalAmount))
+                                    .replace("{currency}", currency);
+                            ChatUtil.sendPrefixedMessage(player, message);
                         }
                         if (Config.getSoundStatus()) {
                             player.playSound(player.getLocation(), XSound.ENTITY_EXPERIENCE_ORB_PICKUP.parseSound(), 1.0F, 1.0F);

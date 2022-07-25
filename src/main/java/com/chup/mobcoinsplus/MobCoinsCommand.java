@@ -11,7 +11,6 @@ import co.aikar.commands.bukkit.contexts.OnlinePlayer;
 import com.chup.mobcoinsplus.extras.ChatUtil;
 import com.chup.mobcoinsplus.extras.CoinsTop;
 import com.chup.mobcoinsplus.extras.Extras;
-import com.chup.mobcoinsplus.guis.MobShopGUI;
 import com.cryptomorin.xseries.XMaterial;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Bukkit;
@@ -28,9 +27,6 @@ import java.util.*;
 @CommandAlias("mobcoins|mc")
 @Description("MobCoins commands.")
 public class MobCoinsCommand extends BaseCommand {
-
-    String prefix = ChatUtil.color(Config.getPluginPrefix());
-
     private final Main plugin;
 
     public MobCoinsCommand(Main plugin) {
@@ -44,7 +40,7 @@ public class MobCoinsCommand extends BaseCommand {
         plugin.getConfigManager().save("messages.yml");
         plugin.reloadConfig();
         String message = ChatUtil.color(plugin.getMessages().getString("reload"));
-        ChatUtil.sendPrefixedMessage(sender,message);
+        ChatUtil.sendPrefixedMessage(sender, message);
     }
 
     @Subcommand("gui")
@@ -62,7 +58,7 @@ public class MobCoinsCommand extends BaseCommand {
         }
 
         String message = plugin.getMessages().getString("no-permission");
-        player.sendMessage(prefix + ChatUtil.color(message));
+        ChatUtil.sendPrefixedMessage(player,message);
     }
 
     @Subcommand("help")
@@ -83,7 +79,7 @@ public class MobCoinsCommand extends BaseCommand {
         }
 
         String message = plugin.getMessages().getString("no-permission");
-        sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
+        ChatUtil.sendPrefixedMessage(sender, message);
     }
 
     @Subcommand("send")
@@ -95,33 +91,33 @@ public class MobCoinsCommand extends BaseCommand {
 
         if (target.getPlayer() == sender) {
             String message = plugin.getMessages().getString("self-send");
-            sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
+            ChatUtil.sendPrefixedMessage(sender,message);
             return;
         }
         if (amount <= 0) {
             //todo enforce at command level
             String message = plugin.getMessages().getString("invalid-amount");
-            sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
+            ChatUtil.sendPrefixedMessage(sender,message);
             return;
         }
         if (Extras.getCoins(sender.getUniqueId()) < amount) {
             String message = plugin.getMessages().getString("negative-coins");
-            sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
+            ChatUtil.sendPrefixedMessage(sender,message);
             return;
         }
 
         Extras.giveCoins(target.getPlayer(), amount);
         Extras.removeCoins(sender, amount);
         // send message to sender //
-        String playerMessage = plugin.getMessages().getString("send-coins");
-        playerMessage = playerMessage.replace("{target}", target.getPlayer().getName());
-        playerMessage = playerMessage.replace("{amount}", Integer.toString(amount));
-        sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', playerMessage));
+        String playerMessage = plugin.getMessages().getString("send-coins")
+                .replace("{target}", target.getPlayer().getName())
+                .replace("{amount}", Integer.toString(amount));
+        ChatUtil.sendPrefixedMessage(sender,playerMessage);
         // send message to recipient //
-        String targetMessage = plugin.getMessages().getString("given-coins");
-        targetMessage = targetMessage.replace("{player}", sender.getName());
-        targetMessage = targetMessage.replace("{amount}", Integer.toString(amount));
-        target.getPlayer().sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', targetMessage));
+        String targetMessage = plugin.getMessages().getString("given-coins")
+                .replace("{player}", sender.getName())
+                .replace("{amount}", Integer.toString(amount));
+        ChatUtil.sendPrefixedMessage(target.getPlayer(),targetMessage);
     }
 
     @CommandPermission("mobcoinsplus.top")
@@ -130,7 +126,7 @@ public class MobCoinsCommand extends BaseCommand {
         String decimalFormat = "###,###,###,###,###,###,###,###";
         DecimalFormat formatter = new DecimalFormat(decimalFormat);
         int cycle = 0;
-        ChatUtil.sendPrefixedMessage(sender,plugin.getMessages().getString("mobcoins-top-title"));
+        ChatUtil.sendPrefixedMessage(sender, plugin.getMessages().getString("mobcoins-top-title"));
         for (Map.Entry<UUID, Integer> en : top.entrySet()) {
             String name = Bukkit.getServer().getOfflinePlayer(en.getKey()).getName();
             String format = ChatUtil.color(plugin.getMessages().getString("mobcoins-top-format"));
@@ -152,11 +148,11 @@ public class MobCoinsCommand extends BaseCommand {
         Extras.setCoins(target.getPlayer(), newAmount);
         String currencyName = Config.getCurrencyName();
         int playerCoins = Extras.getCoins(target.getPlayer().getUniqueId());
-        String message = plugin.getMessages().getString("player-new-balance");
-        message = message.replace("{total-coins}", Integer.toString(playerCoins))
+        String message = plugin.getMessages().getString("player-new-balance")
+                .replace("{total-coins}", Integer.toString(playerCoins))
                 .replace("{currency}", currencyName)
                 .replace("{player}", target.getPlayer().getName());
-        sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
+        ChatUtil.sendPrefixedMessage(sender,message);
     }
 
     @Subcommand("additem")
@@ -164,19 +160,16 @@ public class MobCoinsCommand extends BaseCommand {
         ItemStack item = Extras.duplicateItem(sender);
         if (item.getType() == XMaterial.AIR.parseMaterial()) {
             String message = plugin.getMessages().getString("invalid-item");
-            sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
+            ChatUtil.sendPrefixedMessage(sender, message);
             return;
         }
 
         ItemMeta itemMeta = item.getItemMeta();
         String currencySymbol = Config.getCurrencySymbol();
-        String priceFormat = ChatColor.translateAlternateColorCodes('&', plugin.getMessages().getString("price-format"));
+        String priceFormat = ChatUtil.color(plugin.getMessages().getString("price-format"));
         priceFormat = priceFormat.replace("{amount}", Integer.toString(price));
         if (itemMeta.getLore() != null && itemMeta.hasLore()) {
-            List<String> lore = new ArrayList<>();
-            for (int i = 0; i < itemMeta.getLore().size(); i++) {
-                lore.add(itemMeta.getLore().get(i));
-            }
+            List<String> lore = new ArrayList<>(itemMeta.getLore());
             lore.add("");
             if (Config.getCurrencySymbolStatus()) {
                 lore.add(priceFormat + currencySymbol);
@@ -198,8 +191,7 @@ public class MobCoinsCommand extends BaseCommand {
         Main.getAllItems().add(item);
         Main.getCost().put(item, price);
         String message = plugin.getMessages().getString("item-added");
-        sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
-
+        ChatUtil.sendPrefixedMessage(sender, message);
     }
 
     @Subcommand("additem dummy")
@@ -213,7 +205,7 @@ public class MobCoinsCommand extends BaseCommand {
         Main.getAllItems().add(dummy);
         Main.getCost().put(dummy, 0);
         String message = plugin.getMessages().getString("item-added");
-        sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
+        ChatUtil.sendPrefixedMessage(sender, message);
     }
 
 
@@ -222,7 +214,7 @@ public class MobCoinsCommand extends BaseCommand {
         id = id - 1;
         if (!validId(id)) {
             String message = plugin.getMessages().getString("invalid-id");
-            sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
+            ChatUtil.sendPrefixedMessage(sender, message);
             return;
         }
 
@@ -230,7 +222,7 @@ public class MobCoinsCommand extends BaseCommand {
         Main.getCost().remove(Main.getAllItems().get(id));
         Main.getAllItems().remove(id);
         String message = plugin.getMessages().getString("item-removed");
-        sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
+        ChatUtil.sendPrefixedMessage(sender, message);
     }
 
     private boolean validId(int id) {
@@ -246,12 +238,12 @@ public class MobCoinsCommand extends BaseCommand {
     @CommandPermission("mobcoinsplus.amount")
     public void onAmount(final CommandSender sender, final OnlinePlayer target) {
         int playerCoins = Extras.getCoins(target.getPlayer().getUniqueId());
-        String message = plugin.getMessages().getString("player-balance");
-        message = message.replace("{total-coins}", Integer.toString(playerCoins));
-        message = message.replace("{currency}", Config.getCurrencyName());
-        message = message.replace("{player}", target.getPlayer().getName());
-        sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
+        String message = plugin.getMessages().getString("player-balance")
+                .replace("{total-coins}", Integer.toString(playerCoins))
+                .replace("{currency}", Config.getCurrencyName())
+                .replace("{player}", target.getPlayer().getName());
 
+        ChatUtil.sendPrefixedMessage(sender,message);
     }
 
     @Subcommand("remove")
@@ -260,16 +252,17 @@ public class MobCoinsCommand extends BaseCommand {
         int playerCoins = Extras.getCoins(target.getPlayer().getUniqueId());
         if ((playerCoins - newAmount) < 0) {
             String message = plugin.getMessages().getString("target-negative-coins");
-            sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
+            ChatUtil.sendPrefixedMessage(sender, message);
             return;
         }
 
         Extras.removeCoins(target.getPlayer(), newAmount);
-        String message = plugin.getMessages().getString("player-new-balance");
-        message = message.replace("{total-coins}", Integer.toString(Extras.getCoins(target.getPlayer().getUniqueId())));
-        message = message.replace("{currency}", Config.getCurrencyName());
-        message = message.replace("{player}", target.getPlayer().getName());
-        sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
+        String message = plugin.getMessages().getString("player-new-balance")
+                .replace("{total-coins}", Integer.toString(Extras.getCoins(target.getPlayer().getUniqueId())))
+                .replace("{currency}", Config.getCurrencyName())
+                .replace("{player}", target.getPlayer().getName());
+
+        ChatUtil.sendPrefixedMessage(sender,message);
     }
 
     @Subcommand("give")
@@ -277,20 +270,21 @@ public class MobCoinsCommand extends BaseCommand {
     public void onGive(final CommandSender sender, final OnlinePlayer target, int newAmount) {
         Extras.giveCoins(target.getPlayer(), newAmount);
         int playerCoins = Extras.getCoins(target.getPlayer().getUniqueId());
-        String message = plugin.getMessages().getString("player-new-balance");
-        message = message.replace("{total-coins}", Integer.toString(playerCoins));
-        message = message.replace("{currency}", Config.getCurrencyName());
-        message = message.replace("{player}", target.getPlayer().getName());
-        sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
+        String message = plugin.getMessages().getString("player-new-balance")
+                .replace("{total-coins}", Integer.toString(playerCoins))
+                .replace("{currency}", Config.getCurrencyName())
+                .replace("{player}", target.getPlayer().getName());
+
+        ChatUtil.sendPrefixedMessage(sender,message);
     }
 
     @Default
     public void onBalance(final Player sender) {
         int playerCoins = Extras.getCoins(sender.getUniqueId());
-        String message = plugin.getMessages().getString("self-check");
-        message = message.replace("{total-coins}", Integer.toString(playerCoins));
-        message = message.replace("{currency}", Config.getCurrencyName());
-        sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
+        String message = plugin.getMessages().getString("self-check")
+                .replace("{total-coins}", Integer.toString(playerCoins))
+                .replace("{currency}", Config.getCurrencyName());
+        ChatUtil.sendPrefixedMessage(sender, message);
     }
 
     @Subcommand("edit")
@@ -298,26 +292,17 @@ public class MobCoinsCommand extends BaseCommand {
         ItemStack item = Extras.duplicateItem(sender);
 
         boolean exists = false;
-        for (ItemStack items : Main.getCost().keySet()) {
-
-            ItemStack copy = new ItemStack(items);
-            ItemMeta copyMeta = copy.getItemMeta();
-            List<String> newLore = new ArrayList<>();
-            for (int i = 0; i < copyMeta.getLore().size() - 2; i++) {
-                newLore.add(copyMeta.getLore().get(i));
-            }
-
-            copyMeta.setLore(newLore);
-            copy.setItemMeta(copyMeta);
+        for (ItemStack itemStack : Main.getCost().keySet()) {
+            ItemStack copy = itemStack.clone();
 
             if (copy.isSimilar(item)) {
-                Main.getCost().put(items, cost);
+                Main.getCost().put(itemStack, cost);
                 exists = true;
             }
         }
         if (!exists) {
             String message = plugin.getMessages().getString("new-item");
-            sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
+            ChatUtil.sendPrefixedMessage(sender, message);
         }
     }
 }
