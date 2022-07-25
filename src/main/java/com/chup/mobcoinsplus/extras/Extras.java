@@ -15,15 +15,15 @@ public class Extras {
     static String prefix = ChatColor.translateAlternateColorCodes('&', Config.getPluginPrefix());
 
     public static void giveCoins(Player player, int amount) {
-        if (!Main.points.containsKey(player.getUniqueId())) {
+        if (!Main.getPoints().containsKey(player.getUniqueId())) {
 
-            Main.points.put(player.getUniqueId(), amount);
+            Main.getPoints().put(player.getUniqueId(), amount);
 
         } else {
 
-            int playerPoints = Main.points.get(player.getUniqueId());
+            int playerPoints = Main.getPoints().get(player.getUniqueId());
 
-            Main.points.put(player.getUniqueId(), Main.points.get(player.getUniqueId()) + amount);
+            Main.getPoints().put(player.getUniqueId(), Main.getPoints().get(player.getUniqueId()) + amount);
 
         }
 
@@ -31,15 +31,15 @@ public class Extras {
 
     public static void removeCoins(Player player, int amount) {
 
-        if (!Main.points.containsKey(player.getUniqueId())) {
+        if (!Main.getPoints().containsKey(player.getUniqueId())) {
 
-            Main.points.put(player.getUniqueId(), -amount);
+            Main.getPoints().put(player.getUniqueId(), -amount);
 
         } else {
 
-            int playerPoints = Main.points.get(player.getUniqueId());
+            int playerPoints = Main.getPoints().get(player.getUniqueId());
 
-            Main.points.put(player.getUniqueId(), playerPoints - amount);
+            Main.getPoints().put(player.getUniqueId(), playerPoints - amount);
 
         }
 
@@ -47,15 +47,15 @@ public class Extras {
 
     public static void setCoins(Player player, int amount) {
 
-        Main.points.put(player.getUniqueId(), amount);
+        Main.getPoints().put(player.getUniqueId(), amount);
 
     }
 
     public static Integer getCoins(UUID uuid) {
-        if (!Main.points.containsKey(uuid)) {
+        if (!Main.getPoints().containsKey(uuid)) {
             return 0;
         }
-        return Main.points.get(uuid);
+        return Main.getPoints().get(uuid);
     }
 
     public static ItemStack duplicateItem(Player player) {

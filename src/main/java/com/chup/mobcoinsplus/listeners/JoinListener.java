@@ -17,12 +17,12 @@ public class JoinListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
-        if (!Main.points.containsKey(player.getUniqueId())) {
+        if (!Main.getPoints().containsKey(player.getUniqueId())) {
             int amount = 0;
             if (plugin.getConfig().contains("starting-amount")) {
                 amount = plugin.getConfig().getInt("starting-amount");
             }
-            Main.points.put(player.getUniqueId(), amount);
+            Main.getPoints().put(player.getUniqueId(), amount);
         }
     }
 }

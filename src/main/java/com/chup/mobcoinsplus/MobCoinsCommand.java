@@ -41,8 +41,8 @@ public class MobCoinsCommand extends BaseCommand {
     @Subcommand("reload|rl")
     @CommandPermission("mobcoinsplus.admin")
     public void onReload(final @NotNull CommandSender sender) {
-        plugin.configManager.reload("messages.yml");
-        plugin.configManager.save("messages.yml");
+        plugin.getConfigManager().reload("messages.yml");
+        plugin.getConfigManager().save("messages.yml");
         plugin.reloadConfig();
         String message = ChatUtil.color(plugin.getMessages().getString("reload"));
         sender.sendMessage(prefix + message);
@@ -127,7 +127,7 @@ public class MobCoinsCommand extends BaseCommand {
 
     @CommandPermission("mobcoinsplus.top")
     public void onTop(final CommandSender sender) {
-        Map<UUID, Integer> top = CoinsTop.sortByValue(Main.points);
+        Map<UUID, Integer> top = CoinsTop.sortByValue(Main.getPoints());
         String decimalFormat = "###,###,###,###,###,###,###,###";
         DecimalFormat formatter = new DecimalFormat(decimalFormat);
         int cycle = 0;
@@ -196,7 +196,7 @@ public class MobCoinsCommand extends BaseCommand {
             itemMeta.setLore(lore);
         }
         item.setItemMeta(itemMeta);
-        Main.allItems.add(item);
+        Main.getAllItems().add(item);
         Main.getCost().put(item, price);
         String message = plugin.getMessages().getString("item-added");
         sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
@@ -211,7 +211,7 @@ public class MobCoinsCommand extends BaseCommand {
         NBTItem nbtItem = new NBTItem(dummy);
         nbtItem.setInteger("RandomToPreventSimilarity", dummyRanChoice);
         dummy = nbtItem.getItem();
-        Main.allItems.add(dummy);
+        Main.getAllItems().add(dummy);
         Main.getCost().put(dummy, 0);
         String message = plugin.getMessages().getString("item-added");
         sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
@@ -228,18 +228,18 @@ public class MobCoinsCommand extends BaseCommand {
         }
 
 
-        Main.getCost().remove(Main.allItems.get(id));
-        Main.allItems.remove(id);
+        Main.getCost().remove(Main.getAllItems().get(id));
+        Main.getAllItems().remove(id);
         String message = plugin.getMessages().getString("item-removed");
         player.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
     }
 
     private boolean validId(int id) {
-        if (!(id + 1 > 0 && Main.allItems.size() >= id + 1)) {
+        if (!(id + 1 > 0 && Main.getAllItems().size() >= id + 1)) {
             return false;
         }
 
-        return Main.getCost().containsKey(Main.allItems.get(id));
+        return Main.getCost().containsKey(Main.getAllItems().get(id));
     }
 
 

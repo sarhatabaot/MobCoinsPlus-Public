@@ -44,8 +44,8 @@ public class CoinListener implements Listener {
         if (((EntityDamageByEntityEvent) d).getDamager() instanceof Player) {
             Player player = (Player) ((EntityDamageByEntityEvent) d).getDamager();
             if (!worlds.contains(player.getWorld().getName())) {
-                if (!Main.points.containsKey(player.getUniqueId())) {
-                    Main.points.put(player.getUniqueId(), 0);
+                if (!Main.getPoints().containsKey(player.getUniqueId())) {
+                    Main.getPoints().put(player.getUniqueId(), 0);
                 }
                 Random ran = plugin.getRandom();
                 int choice = ran.nextInt(100) + 1;
@@ -60,7 +60,7 @@ public class CoinListener implements Listener {
                 }
 
                 if (choice <= chance && choice > 0) {
-                    Main.points.put(player.getUniqueId(), Main.points.get(player.getUniqueId()) + finalAmount);
+                    Main.getPoints().put(player.getUniqueId(), Main.getPoints().get(player.getUniqueId()) + finalAmount);
                     if (Config.getMessageStatus()) {
                         String message = plugin.getMessages().getString("coins-collected");
                         message = message.replace("{amount}", Integer.toString(finalAmount));
@@ -71,7 +71,7 @@ public class CoinListener implements Listener {
                         player.playSound(player.getLocation(), XSound.ENTITY_EXPERIENCE_ORB_PICKUP.parseSound(), 1.0F, 1.0F);
                     }
                     try {
-                        SLAPI.save(Main.points, "./plugins/MobCoinsPlus/data/coins.bin");
+                        SLAPI.save(Main.getPoints(), "./plugins/MobCoinsPlus/data/coins.bin");
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
@@ -82,8 +82,8 @@ public class CoinListener implements Listener {
             if (arrow.getShooter() instanceof Player) {
                 Player player = (Player) arrow.getShooter();
                 if (!worlds.contains(player.getWorld().getName())) {
-                    if (!Main.points.containsKey(player.getUniqueId())) {
-                        Main.points.put(player.getUniqueId(), 0);
+                    if (!Main.getPoints().containsKey(player.getUniqueId())) {
+                        Main.getPoints().put(player.getUniqueId(), 0);
                     }
                     Random ran = plugin.getRandom();
                     int choice = ran.nextInt(100) + 1;
@@ -98,7 +98,7 @@ public class CoinListener implements Listener {
                     }
 
                     if (choice <= chance && choice > 0) {
-                        Main.points.put(player.getUniqueId(), Main.points.get(player.getUniqueId()) + finalAmount);
+                        Main.getPoints().put(player.getUniqueId(), Main.getPoints().get(player.getUniqueId()) + finalAmount);
                         if (Config.getMessageStatus()) {
                             String message = plugin.getMessages().getString("coins-collected");
                             message = message.replace("{amount}", Integer.toString(finalAmount));
@@ -109,7 +109,7 @@ public class CoinListener implements Listener {
                             player.playSound(player.getLocation(), XSound.ENTITY_EXPERIENCE_ORB_PICKUP.parseSound(), 1.0F, 1.0F);
                         }
                         try {
-                            SLAPI.save(Main.points, "./plugins/MobCoinsPlus/data/coins.bin");
+                            SLAPI.save(Main.getPoints(), "./plugins/MobCoinsPlus/data/coins.bin");
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }

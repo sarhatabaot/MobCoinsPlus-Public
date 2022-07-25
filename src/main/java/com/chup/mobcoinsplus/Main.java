@@ -1,8 +1,10 @@
 package com.chup.mobcoinsplus;
 
+import co.aikar.commands.PaperCommandManager;
 import com.chup.mobcoinsplus.configuration.ConfigManager;
 import com.chup.mobcoinsplus.extras.SLAPI;
 import com.chup.mobcoinsplus.extras.SpigotExpansion;
+import com.chup.mobcoinsplus.guis.ClickListener;
 import com.chup.mobcoinsplus.listeners.*;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -21,19 +23,42 @@ import java.util.Random;
 import java.util.UUID;
 
 public class Main extends JavaPlugin {
-
-    public static Map<UUID, Integer> points = new HashMap<>();
-    public static List<ItemStack> allItems;
-    public static Map<ItemStack, Integer> cost;
-    public ConfigManager configManager;
+    private static Map<UUID, Integer> points = new HashMap<>();
+    private static List<ItemStack> allItems;
+    private static Map<ItemStack, Integer> cost;
+    private ConfigManager configManager;
 
     private Random random;
+
+    public static Map<ItemStack, Integer> getCost() {
+        return cost;
+    }
+
+    public static void setCost(Map<ItemStack, Integer> cost) {
+        Main.cost = cost;
+    }
+
+    public static List<ItemStack> getAllItems() {
+        return allItems;
+    }
+
+    public static void setAllItems(List<ItemStack> allItems) {
+        Main.allItems = allItems;
+    }
+
+    public static Map<UUID, Integer> getPoints() {
+        return points;
+    }
+
+    public static void setPoints(Map<UUID, Integer> points) {
+        Main.points = points;
+    }
 
     @Override
     public void onEnable() {
         this.random = new Random();
-        allItems = new ArrayList<>();
-        cost = new HashMap<>();
+        setAllItems(new ArrayList<>());
+        setCost(new HashMap<>());
 
         File file = new File(this.getDataFolder() + "/data");
         if(!file.exists()) {
@@ -41,7 +66,7 @@ public class Main extends JavaPlugin {
         }
 
         try {
-            points = (HashMap<UUID, Integer>) SLAPI.load("./plugins/MobCoinsPlus/data/coins.bin");
+            setPoints((HashMap<UUID, Integer>) SLAPI.load("./plugins/MobCoinsPlus/data/coins.bin"));
         } catch (FileNotFoundException e) {
             getLogger().info("Coins file generating!");
         } catch (Exception e) {
@@ -49,7 +74,7 @@ public class Main extends JavaPlugin {
         }
 
         try {
-            allItems = (ArrayList<ItemStack>) SLAPI.bukkitLoad("./plugins/MobCoinsPlus/data/items.bin");
+            setAllItems((ArrayList<ItemStack>) SLAPI.bukkitLoad("./plugins/MobCoinsPlus/data/items.bin"));
         } catch (FileNotFoundException e) {
             getLogger().info("Items file generating!");
         } catch (Exception e) {
@@ -57,7 +82,7 @@ public class Main extends JavaPlugin {
         }
 
         try {
-            cost = (HashMap<ItemStack, Integer>) SLAPI.bukkitLoad("./plugins/MobCoinsPlus/data/cost.bin");
+            setCost((HashMap<ItemStack, Integer>) SLAPI.bukkitLoad("./plugins/MobCoinsPlus/data/cost.bin"));
         } catch (FileNotFoundException e) {
             getLogger().info("Cost file generating!");
         } catch (Exception e) {
@@ -69,12 +94,13 @@ public class Main extends JavaPlugin {
 
         new Metrics(this, 9663);
 
-        this.configManager = new ConfigManager(this);
-        this.configManager.load("messages.yml");
-        this.configManager.save("messages.yml");
+        this.setConfigManager(new ConfigManager(this));
+        this.getConfigManager().load("messages.yml");
+        this.getConfigManager().save("messages.yml");
 
-        getCommand("mobcoins").setExecutor(new MobCoinsExecutor(this));
-        getCommand("mobshop").setExecutor(new MobShopExecutor(this));
+        PaperCommandManager paperCommandManager = new PaperCommandManager(this);
+        paperCommandManager.registerCommand(new MobCoinsCommand(this));
+
         Bukkit.getPluginManager().registerEvents(new CoinListener(this), this);
         Bukkit.getPluginManager().registerEvents(new ClickListener(this), this);
         Bukkit.getPluginManager().registerEvents(new CommandListener(), this);
@@ -92,19 +118,19 @@ public class Main extends JavaPlugin {
     public void onDisable() {
         this.random = null;
         try {
-            SLAPI.save(points, "./plugins/MobCoinsPlus/data/coins.bin");
+            SLAPI.save(getPoints(), "./plugins/MobCoinsPlus/data/coins.bin");
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
-            SLAPI.bukkitSave(allItems, "./plugins/MobCoinsPlus/data/items.bin");
+            SLAPI.bukkitSave(getAllItems(), "./plugins/MobCoinsPlus/data/items.bin");
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
-            SLAPI.bukkitSave(cost, "./plugins/MobCoinsPlus/data/cost.bin");
+            SLAPI.bukkitSave(getCost(), "./plugins/MobCoinsPlus/data/cost.bin");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -123,4 +149,11 @@ public class Main extends JavaPlugin {
         return random;
     }
 
+    public ConfigManager getConfigManager() {
+        return configManager;
+    }
+
+    public void setConfigManager(ConfigManager configManager) {
+        this.configManager = configManager;
+    }
 }

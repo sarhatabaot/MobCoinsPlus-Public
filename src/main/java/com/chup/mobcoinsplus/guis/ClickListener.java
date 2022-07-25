@@ -2,7 +2,6 @@ package com.chup.mobcoinsplus.guis;
 
 import com.chup.mobcoinsplus.Config;
 import com.chup.mobcoinsplus.Main;
-import com.chup.mobcoinsplus.guis.MobShopGUI;
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XSound;
 import org.bukkit.ChatColor;
@@ -53,21 +52,21 @@ public class ClickListener implements Listener {
                 && e.getRawSlot() != 18 && e.getRawSlot() != 27 && e.getRawSlot() != 36 && e.getRawSlot() != 17
                 && e.getRawSlot() != 26 && e.getRawSlot() != 35) {
             if (meta.hasLore()) {
-                if (!Main.points.containsKey(player.getUniqueId())) {
+                if (!Main.getPoints().containsKey(player.getUniqueId())) {
                     String message = plugin.getMessages().getString("insufficient-coins");
                     player.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
                     player.playSound(player.getLocation(), XSound.ENTITY_VILLAGER_NO.parseSound(), 1.0F, 1.0F);
                     return;
                 }
 
-                if (!Main.cost.containsKey(item)) {
+                if (!Main.getCost().containsKey(item)) {
                     String message = plugin.getMessages().getString("item-unknown");
                     player.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
                     player.playSound(player.getLocation(), XSound.ENTITY_VILLAGER_NO.parseSound(), 1.0F, 1.0F);
                     player.closeInventory();
                     return;
                 }
-                if (Main.points.get(player.getUniqueId()) < Main.cost.get(item)) {
+                if (Main.getPoints().get(player.getUniqueId()) < Main.getCost().get(item)) {
                     String message = plugin.getMessages().getString("insufficient-coins");
                     player.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', message));
                     player.playSound(player.getLocation(), XSound.ENTITY_VILLAGER_NO.parseSound(), 1.0F, 1.0F);
@@ -80,8 +79,8 @@ public class ClickListener implements Listener {
                 for (int i = 0; i < copyMeta.getLore().size() - 2; i++) {
                     newLore.add(copyMeta.getLore().get(i));
                 }
-                int price = Main.cost.get(item);
-                int balance = Main.points.get(player.getUniqueId());
+                int price = Main.getCost().get(item);
+                int balance = Main.getPoints().get(player.getUniqueId());
                 copyMeta.setLore(newLore);
                 copy.setItemMeta(copyMeta);
                 if (player.getInventory().firstEmpty() == -1) {
@@ -91,7 +90,7 @@ public class ClickListener implements Listener {
                     return;
                 }
 
-                Main.points.put(player.getUniqueId(), balance - price);
+                Main.getPoints().put(player.getUniqueId(), balance - price);
                 player.getInventory().setItem(player.getInventory().firstEmpty(), copy);
                 player.closeInventory();
                 String message = plugin.getMessages().getString("item-purchased");

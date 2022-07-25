@@ -27,7 +27,7 @@ public class MobShopGUI {
         String currencySymbol = Config.getCurrencySymbol();
 
         Inventory gui = Bukkit.createInventory(null, 54, name);
-        ArrayList<ItemStack> allItems = new ArrayList<>(Main.allItems);
+        ArrayList<ItemStack> allItems = new ArrayList<>(Main.getAllItems());
 
         ItemStack left;
         ItemMeta leftMeta;
@@ -64,12 +64,12 @@ public class MobShopGUI {
         coins = new ItemStack(XMaterial.PRISMARINE_CRYSTALS.parseMaterial());
         coinsMeta = coins.getItemMeta();
         int number;
-        if(Main.points.containsKey(player.getUniqueId())) {
-            number = Main.points.get(player.getUniqueId());
+        if(Main.getPoints().containsKey(player.getUniqueId())) {
+            number = Main.getPoints().get(player.getUniqueId());
         } else {
             number = 0;
         }
-        if(Main.points.containsKey(player.getUniqueId())) {
+        if(Main.getPoints().containsKey(player.getUniqueId())) {
             if(Config.getCurrencySymbolStatus()) {
                 coinsMeta.setDisplayName(ChatColor.AQUA + currency + ": " + ChatColor.GRAY + formatter.format(number) + currencySymbol);
             } else {

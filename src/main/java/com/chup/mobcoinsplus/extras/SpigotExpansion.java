@@ -45,21 +45,21 @@ public class SpigotExpansion extends PlaceholderExpansion {
         }
 
         if(params.equals("playerbalance")) {
-            if(Main.points.containsKey(player.getUniqueId())) {
-                return String.valueOf(Main.points.get(player.getUniqueId()));
+            if(Main.getPoints().containsKey(player.getUniqueId())) {
+                return String.valueOf(Main.getPoints().get(player.getUniqueId()));
             }
             return String.valueOf(0);
         }
         if(params.equals("playerbalance_formatted")) {
             DecimalFormat formatter = new DecimalFormat("###,###,###,###,###,###,###,###");
-            if(Main.points.containsKey(player.getUniqueId())) {
-                return formatter.format(Main.points.get(player.getUniqueId()));
+            if(Main.getPoints().containsKey(player.getUniqueId())) {
+                return formatter.format(Main.getPoints().get(player.getUniqueId()));
             }
 
             return String.valueOf(0);
         }
         if(params.contains("coinstop_player_")) {
-            Map<UUID, Integer> top = CoinsTop.sortByValue(Main.points);
+            Map<UUID, Integer> top = CoinsTop.sortByValue(Main.getPoints());
             int cycle = 0;
             int position = Integer.parseInt(ChatColor.stripColor(params).replaceAll("[^0-9]", ""));
             for (Map.Entry<UUID, Integer> en : top.entrySet()) {
@@ -72,7 +72,7 @@ public class SpigotExpansion extends PlaceholderExpansion {
         }
 
         if(params.contains("coinstop_amount_")) {
-            Map<UUID, Integer> top = CoinsTop.sortByValue(Main.points);
+            Map<UUID, Integer> top = CoinsTop.sortByValue(Main.getPoints());
             DecimalFormat formatter = new DecimalFormat("###,###,###,###,###,###,###,###");
             int cycle = 0;
             int position = Integer.parseInt(ChatColor.stripColor(params).replaceAll("[^0-9]", ""));
